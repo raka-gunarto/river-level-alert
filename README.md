@@ -3,10 +3,10 @@
 Small system to keep track of various river water levels and send alerts
 
 TODOs:
-- [ ] Backend logic
-    - [ ] Firebase push notifications
-        - [ ] Subscribe to notifs
-        - [ ] Send warn and danger notifs
+- [x] Backend logic
+    - [x] Firebase push notifications
+        - [x] Subscribe to notifs
+        - [x] Send warn and danger notifs
     - [x] Datapoints
         - [x] Receive datapoints from sensors
         - [x] Send datapoints from app clients

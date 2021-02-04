@@ -6,12 +6,26 @@ require('WaterLevelDatapoint.model.js');
 const WaterLevelDatapoint = mongoose.model('WaterLevelDatapoint');
 const sensors = require('./sensors');
 
-const {sendDangerNotif, sendWarnNotif} = require('./notify.js')
+const admin = require('./config/firebase');
+const firebaseMessaging = admin.messaging();
+const {sendDangerNotif, sendWarnNotif} = require('./notify.js')(firebaseMessaging);
 
+const bodyParser = require('body-parser');
 const app = require('express')();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded(extended: true));
+
 app.post('/subscribe/:sensorID', (req, res) => {
-    
+    if (!sensors[req.params.sensorID]) return res.sendStatus(404);
+    firebaseMessaging.subscribeToTopic(req.body.token, req.params.sensorID);
+    res.sendStatus(200);
 })
+
+app.post('/unsubscribe/:sensorID', (req,res) => {
+    firebaseMessaging.unsubscribeFromTopic(req.body.token, req.params.sensorID);
+    res.sendStatus(200);
+})
+
 app.get('/data/:sensorID', (req, res) => {
     const limit = req.query.limit || 50;
     WaterLevelDatapoint
