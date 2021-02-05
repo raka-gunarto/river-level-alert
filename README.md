@@ -11,10 +11,10 @@ TODOs:
         - [x] Receive datapoints from sensors
         - [x] Send datapoints from app clients
 - [ ] Frontend
-    - [ ] Layout
-        - [ ] Sidebar
-        - [ ] Water level reading
-        - [ ] Water level graph
+    - [x] Layout
+        - [x] Sidebar
+        - [x] Water level reading
+        - [x] Water level graph
     - [ ] Backend integration
         - [ ] Sidebar populate sensors from server
         - [ ] Regularly request water level from server
