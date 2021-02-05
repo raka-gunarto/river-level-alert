@@ -13,7 +13,7 @@ const {sendDangerNotif, sendWarnNotif} = require('./notify.js')(firebaseMessagin
 const bodyParser = require('body-parser');
 const app = require('express')();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded(extended: true));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.post('/subscribe/:sensorID', (req, res) => {
     if (!sensors[req.params.sensorID]) return res.sendStatus(404);
