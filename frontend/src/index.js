@@ -1,11 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import axios from "axios";
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "production"
+    ? "https://riverwaterlevel.rakagunarto.com"
+    : "http://localhost:3000";
+
+ReactDOM.render(<App />, document.getElementById("root"));
+
+serviceWorkerRegistration.register();

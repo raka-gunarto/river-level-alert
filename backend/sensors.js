@@ -15,6 +15,30 @@ module.exports = {
         warnLevel: 24,
         dangerLevel: 28,
         name: 'sungai 1',
-        location: 'somewhere'
+        location: 'somewhere',
+    },
+    sensor_2: {
+        calculateWaterLevel: (raw) => {
+            const heightCalibration = 50;
+            let cm = rawToCentimeters(raw);
+            return heightCalibration - cm;
+        },
+        safeLevel: 20,
+        warnLevel: 24,
+        dangerLevel: 28,
+        name: 'sungai 2',
+        location: 'somewhere',
+    },
+    sensor_3: {
+        calculateWaterLevel: (raw) => {
+            const heightCalibration = 50;
+            let cm = rawToCentimeters(raw);
+            return heightCalibration - cm;
+        },
+        safeLevel: 20,
+        warnLevel: 24,
+        dangerLevel: 28,
+        name: 'sungai 3',
+        location: 'somewhere',
     },
 };

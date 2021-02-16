@@ -1,20 +1,31 @@
 module.exports = function (messaging) {
     return {
-        sendDangerNotif: (sensorID) => {
+        sendEvacuateNotif: (sensorID, sensorName) => {
             messaging.send({
                 data: {
-                    severity: 'danger'
+                    severity: 'evacuate',
+                    river: sensorName
                 },
-                topic: sensorID
-            })
+                topic: sensorID,
+            });
         },
-        sendWarnNotif: (sensorID) => {
+        sendDangerNotif: (sensorID, sensorName) => {
             messaging.send({
                 data: {
-                    severity: 'warn'
+                    severity: 'danger',
+                    river: sensorName
                 },
-                topic: sensorID
-            })
+                topic: sensorID,
+            });
+        },
+        sendWarnNotif: (sensorID, sensorName) => {
+            messaging.send({
+                data: {
+                    severity: 'warn',
+                    river: sensorName
+                },
+                topic: sensorID,
+            });
         },
     };
 };

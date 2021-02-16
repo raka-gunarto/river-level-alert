@@ -10,18 +10,18 @@ TODOs:
     - [x] Datapoints
         - [x] Receive datapoints from sensors
         - [x] Send datapoints from app clients
-- [ ] Frontend
+- [x] Frontend
     - [x] Layout
         - [x] Sidebar
         - [x] Water level reading
         - [x] Water level graph
-    - [ ] Backend integration
-        - [ ] Sidebar populate sensors from server
-        - [ ] Regularly request water level from server
-        - [ ] Select sensors to subscribe to
-    - [ ] Push notifs
-        - [ ] Receive push notifs from server
-            - [ ] Display notification
+    - [x] Backend integration
+        - [x] Sidebar populate sensors from server
+        - [x] Regularly request water level from server
+        - [x] Select sensors to subscribe to
+    - [x] Push notifs
+        - [x] Receive push notifs from server
+            - [x] Display notification
 - [ ] Hardware sensor logic
     - [ ] Water level logic
     - [ ] Send water level to server

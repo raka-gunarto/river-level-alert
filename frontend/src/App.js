@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   SwipeableDrawer,
   AppBar,
+  Box,
   CircularProgress,
   Grid,
   List,
@@ -12,6 +13,8 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import { Waves, Menu } from "@material-ui/icons";
 import {
@@ -22,29 +25,94 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
-const sensors = [
-  { id: "sensor_1", name: "Place 1" },
-  { id: "sensor_2", name: "Place 2" },
-  { id: "sensor_3", name: "Place 3" },
-];
+import axios from "axios";
+
+import "./firebase";
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeSensor, setActiveSensor] = useState(sensors[0]);
+  const [activeSensor, setActiveSensor] = useState(null);
 
+  const [sensors, setSensors] = useState(null);
   const [sensorData, setSensorData] = useState(null);
 
-  const circleColor = sensorData
-    ? sensorData.data[0].waterLevel >= sensorData.dangerLevel
-      ? "#d50000"
-      : sensorData.data[0].waterLevel >= sensorData.warnLevel
-      ? "#ffd600"
-      : "#00c853"
-    : null;
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  useEffect(() => {}, []);
+  const circleColor =
+    sensorData && sensorData.data[0]
+      ? sensorData.data[0].waterLevel >= sensorData.dangerLevel
+        ? "#d50000"
+        : sensorData.data[0].waterLevel >= sensorData.warnLevel
+        ? "#ffd600"
+        : "#00c853"
+      : "#000000";
+
+  useEffect(() => {
+    axios.get("/sensors").then((resp) => {
+      let sensorsTmp = [];
+      for (let [id, info] of Object.entries(resp.data))
+        sensorsTmp.push({
+          id: id,
+          name: info.name,
+        });
+      setActiveSensor(sensorsTmp[0]);
+      setSensors(sensorsTmp);
+    });
+
+    setSubscriptions(JSON.parse(localStorage.getItem("subscriptions")) || []);
+  }, []);
+
+  useEffect(() => {
+    console.log("called");
+    let token = localStorage.getItem("fcmToken");
+    console.log(subscriptions);
+    if (!token) return;
+    if (!sensors) return;
+    localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+    for (let sensor of sensors)
+      if (subscriptions.includes(sensor.id))
+        axios.post(`/subscribe/${sensor.id}`, {
+          token: token,
+        });
+      else
+        axios.post(`/unsubscribe/${sensor.id}`, {
+          token: token,
+        });
+  }, [subscriptions, sensors]);
+
+  useEffect(() => {
+    if (activeSensor)
+      axios
+        .get(`/data/${activeSensor.id}`)
+        .then((resp) => setSensorData(resp.data));
+
+    const updateLoop = setInterval(() => {
+      if (activeSensor)
+        axios
+          .get(`/data/${activeSensor.id}`)
+          .then((resp) => setSensorData(resp.data));
+    }, 10000);
+
+    return () => clearInterval(updateLoop);
+  }, [activeSensor]);
+
+  if (!sensors)
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+        <br />
+        <Typography>{"Loading Data..."}</Typography>
+      </Box>
+    );
   return (
     <div>
       <AppBar position="static" style={{ marginBottom: "10px" }}>
@@ -88,19 +156,17 @@ function App() {
         </div>
       </SwipeableDrawer>
       {!sensorData ? (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            height: "100vh",
-            width: "100vw",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          height="80vh"
         >
           <CircularProgress />
-        </div>
+          <br />
+          <Typography>{"Loading Data..."}</Typography>
+        </Box>
       ) : (
         <Grid
           container
@@ -115,8 +181,10 @@ function App() {
             style={{
               padding: "20px",
               borderRadius: "100%",
-              height: "40vw",
-              width: "40vw",
+              minHeight: "250px",
+              minWidth: "250px",
+              height: "25vw",
+              width: "25vw",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -126,23 +194,64 @@ function App() {
             }}
             elevation={0}
           >
-            <Typography variant="h1">
-              {sensorData.data[0].waterLevel}
+            <Typography variant="h2">
+              {sensorData.data[0]?.waterLevel.toFixed(2) || "NO DATA"}
             </Typography>
           </Paper>
 
-          <LineChart
-            width="40vw"
-            height="20vh"
-            data={sensorData.data.slice().reverse()}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="createdAt" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line dataKey="waterLevel" activeDot={true} />
-          </LineChart>
+          {sensorData.data && (
+            <div
+              style={{ marginTop: "50px", width: "80vw", overflowX: "scroll" }}
+            >
+              <ResponsiveContainer height={400}>
+                <LineChart
+                  data={sensorData.data
+                    .map((val) => {
+                      val.createdAt = new Date(val.createdAt).getTime();
+                      return val;
+                    })
+                    .reverse()}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    scale="time"
+                    dataKey="createdAt"
+                    tickFormatter={(time) => new Date(time).toLocaleString()}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value) => value.toFixed(2)}
+                    labelFormatter={(time) => new Date(time).toLocaleString()}
+                  />
+                  <Legend />
+                  <Line
+                    name="Water Level"
+                    dataKey="waterLevel"
+                    activeDot={true}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          <FormControlLabel
+            label="Send notifications"
+            control={
+              <Switch
+                checked={subscriptions.includes(activeSensor.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    if (!subscriptions.includes(activeSensor.id))
+                      setSubscriptions([...subscriptions, activeSensor.id]);
+                  } else {
+                    let subCp = subscriptions.slice();
+                    subCp.splice(subCp.indexOf(activeSensor.id), 1);
+                    setSubscriptions(subCp);
+                  }
+                }}
+              />
+            }
+          />
         </Grid>
       )}
     </div>
