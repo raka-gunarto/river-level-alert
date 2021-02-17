@@ -16,7 +16,7 @@ import {
   FormControlLabel,
   Switch,
 } from "@material-ui/core";
-import { Waves, Menu } from "@material-ui/icons";
+import { Waves, Menu, Favorite } from "@material-ui/icons";
 import {
   LineChart,
   Line,
@@ -252,6 +252,11 @@ function App() {
               />
             }
           />
+
+          <Typography variant="caption">
+            Made with <Favorite fontSize="small" style={{ color: "#ff0000" }} />{" "}
+            by Raka Gunarto
+          </Typography>
         </Grid>
       )}
     </div>

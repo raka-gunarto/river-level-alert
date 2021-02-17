@@ -21,18 +21,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/subscribe/:sensorID', (req, res) => {
+app.post('/api/subscribe/:sensorID', (req, res) => {
     if (!sensors[req.params.sensorID]) return res.sendStatus(404);
     firebaseMessaging.subscribeToTopic(req.body.token, req.params.sensorID);
     res.sendStatus(200);
 });
 
-app.post('/unsubscribe/:sensorID', (req, res) => {
+app.post('/api/unsubscribe/:sensorID', (req, res) => {
     firebaseMessaging.unsubscribeFromTopic(req.body.token, req.params.sensorID);
     res.sendStatus(200);
 });
 
-app.get('/data/:sensorID', (req, res) => {
+app.get('/api/data/:sensorID', (req, res) => {
     const limit = req.query.limit || 50;
     WaterLevelDatapoint.find({ location: req.params.sensorID })
         .sort({ createdAt: 'desc' })
@@ -48,11 +48,11 @@ app.get('/data/:sensorID', (req, res) => {
         });
 });
 
-app.get('/sensors', (req, res) => {
+app.get('/api/sensors', (req, res) => {
     return res.json(sensors);
 });
 
-app.post('/data', (req, res) => {
+app.post('/api/data', (req, res) => {
     if (req.body.secret !== process.env.SHARED_SECRET)
         return res.sendStatus(403);
 
