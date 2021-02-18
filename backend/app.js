@@ -52,11 +52,15 @@ app.get('/api/sensors', (req, res) => {
     return res.json(sensors);
 });
 
-app.post('/api/data', (req, res) => {
+app.post('/api/data', async (req, res) => {
     if (req.body.secret !== process.env.SHARED_SECRET)
         return res.sendStatus(403);
-
     if (!sensors[req.body.location]) return res.sendStatus(400);
+    if (req.body.rawValue === 0) return res.sendStatus(400);
+
+    const [lastDatapoint] = await WaterLevelDatapoint.find({})
+        .sort({ createdAt: 'desc' })
+        .limit(1);
 
     let newDatapoint = new WaterLevelDatapoint({
         location: req.body.location,
@@ -65,25 +69,37 @@ app.post('/api/data', (req, res) => {
         ),
     });
 
+    // TODO: discard erroneous values (sudden change in water level in small timeframe)
+
     newDatapoint
         .save()
-        .then(() => {
+        .then(async () => {
             res.sendStatus(200);
+            const sensorInfo = sensors[newDatapoint.location].dangerLevel;
             if (
-                newDatapoint.waterLevel >=
-                sensors[newDatapoint.location].warnLevel
+                newDatapoint.waterLevel >= sensorInfo.dangerLevel &&
+                lastDatapoint < sensorInfo.dangerLevel
             )
-                sendEvacuateNotif(newDatapoint.location, sensors[req.body.location].name);
+                sendEvacuateNotif(
+                    newDatapoint.location,
+                    sensors[req.body.location].name
+                );
             else if (
-                newDatapoint.waterLevel >=
-                sensors[newDatapoint.location].warnLevel
+                newDatapoint.waterLevel >= sensorInfo.warnLevel &&
+                lastDatapoint < sensorInfo.warnLevel
             )
-                sendDangerNotif(newDatapoint.location, sensors[req.body.location].name);
+                sendDangerNotif(
+                    newDatapoint.location,
+                    sensors[req.body.location].name
+                );
             else if (
-                newDatapoint.waterLevel >=
-                sensors[newDatapoint.location].safeLevel
+                newDatapoint.waterLevel >= sensorInfo.safeLevel &&
+                lastDatapoint < sensorInfo.safeLevel
             )
-                sendWarnNotif(newDatapoint.location, sensors[req.body.location].name);
+                sendWarnNotif(
+                    newDatapoint.location,
+                    sensors[req.body.location].name
+                );
         })
         .catch((err) => {
             console.error(err);
