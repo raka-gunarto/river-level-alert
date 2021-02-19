@@ -66,9 +66,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("called");
     let token = localStorage.getItem("fcmToken");
-    console.log(subscriptions);
     if (!token) return;
     if (!sensors) return;
     localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
