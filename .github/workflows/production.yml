@@ -1,0 +1,59 @@
+name: Production
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+      - name: npm run build & tar.gz
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          tar -czf ../build.tar.gz build/
+      - name: Save build
+        uses: actions/upload-artifact@v2
+        with:
+          name: react-build
+          path: build.tar.gz
+  scp-frontend:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: react-build
+      - name: Copy build to server
+        uses: appleboy/scp-action@master
+        with:
+          host: riverwaterlevel.rakagunarto.com
+          username: ubuntu
+          key: ${{ secrets.SSH_DEPLOY_KEY }}
+          source: "build.tar.gz"
+          target: "."
+  deploy:
+    runs-on: ubuntu-latest
+    needs: scp-frontend
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          # ssh host
+          host: riverwaterlevel.rakagunarto.com
+          username: ubuntu
+          key: ${{ secrets.SSH_DEPLOY_KEY }}
+          script: |
+            sudo rm -rf /var/www/river-frontend;
+            tar -xzf ./build.tar.gz;
+            rm ./build.tar.gz;
+            sudo mv ./build /var/www/river-frontend;
+            cd ~/river-level-alert/backend
+            git fetch --all;
+            git reset --hard origin/master;
+            npm ci;
+            pm2 reload app;
