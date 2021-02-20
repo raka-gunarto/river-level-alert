@@ -78,7 +78,7 @@ app.post('/api/data', async (req, res) => {
             const sensorInfo = sensors[newDatapoint.location];
             if (
                 newDatapoint.waterLevel >= sensorInfo.dangerLevel &&
-                lastDatapoint < sensorInfo.dangerLevel
+                lastDatapoint.waterLevel < sensorInfo.dangerLevel
             )
                 sendEvacuateNotif(
                     newDatapoint.location,
@@ -86,7 +86,7 @@ app.post('/api/data', async (req, res) => {
                 );
             else if (
                 newDatapoint.waterLevel >= sensorInfo.warnLevel &&
-                lastDatapoint < sensorInfo.warnLevel
+                lastDatapoint.waterLevel < sensorInfo.warnLevel
             )
                 sendDangerNotif(
                     newDatapoint.location,
@@ -94,7 +94,7 @@ app.post('/api/data', async (req, res) => {
                 );
             else if (
                 newDatapoint.waterLevel >= sensorInfo.safeLevel &&
-                lastDatapoint < sensorInfo.safeLevel
+                lastDatapoint.waterLevel < sensorInfo.safeLevel
             )
                 sendWarnNotif(
                     newDatapoint.location,
