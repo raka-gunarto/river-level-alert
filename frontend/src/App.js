@@ -193,7 +193,7 @@ function App() {
             elevation={0}
           >
             <Typography variant="h2">
-              {sensorData.data[0]?.waterLevel ? `${sensorData.data[0].waterLevel / 100}m` : "NO DATA"}
+              {sensorData.data[0]?.waterLevel ? `${(sensorData.data[0].waterLevel / 100).toFixed(2)}m` : "NO DATA"}
             </Typography>
           </Paper>
 
