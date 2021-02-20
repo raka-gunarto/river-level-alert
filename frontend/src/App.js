@@ -193,7 +193,7 @@ function App() {
             elevation={0}
           >
             <Typography variant="h2">
-              {sensorData.data[0]?.waterLevel.toFixed(2) || "NO DATA"}
+              {sensorData.data[0]?.waterLevel ? `${sensorData.data[0].waterLevel / 100}m` : "NO DATA"}
             </Typography>
           </Paper>
 
@@ -206,6 +206,7 @@ function App() {
                   data={sensorData.data
                     .map((val) => {
                       val.createdAt = new Date(val.createdAt).getTime();
+                      val.waterLevel /= 100;
                       return val;
                     })
                     .reverse()}
@@ -223,7 +224,7 @@ function App() {
                   />
                   <Legend />
                   <Line
-                    name="Water Level"
+                    name="Water Level (m)"
                     dataKey="waterLevel"
                     activeDot={true}
                   />

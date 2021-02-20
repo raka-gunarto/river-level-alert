@@ -75,7 +75,7 @@ app.post('/api/data', async (req, res) => {
         .save()
         .then(async () => {
             res.sendStatus(200);
-            const sensorInfo = sensors[newDatapoint.location].dangerLevel;
+            const sensorInfo = sensors[newDatapoint.location];
             if (
                 newDatapoint.waterLevel >= sensorInfo.dangerLevel &&
                 lastDatapoint < sensorInfo.dangerLevel

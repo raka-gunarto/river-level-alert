@@ -9,7 +9,7 @@ WiFiClientSecure client;
 void reportToServer(uint microseconds)
 {
   client.setTimeout(10000); // max 10 seconds or die
-  String data = String(String("{\"secret\":") + String(API_SECRET) + String("\",\"location\":") + String(SENSOR_ID) + String("\",\"rawValue\":") + String(microseconds) + String("\"}"));
+  String data = String(String("{\"secret\":\"") + String(API_SECRET) + String("\",\"location\":\"") + String(SENSOR_ID) + String("\",\"rawValue\":") + String(microseconds) + String("}"));
 
   // Attempt to connect
   if (client.connect(API_ADDR, 443))
@@ -18,7 +18,7 @@ void reportToServer(uint microseconds)
     client.println("Host: " + String(API_ADDR));
     client.println("User-Agent: ESP8266/1.0");
     client.println("Connection: close");
-    client.println("Content-Type: application/json;");
+    client.println("Content-Type: application/json");
     client.print("Content-Length: ");
     client.println(data.length());
     client.println();
@@ -26,24 +26,35 @@ void reportToServer(uint microseconds)
     while (!client.available())
       ;
     client.stop();
+    return;
   }
 }
 
 void setup()
 {
+  pinMode(D0, WAKEUP_PULLUP);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(AP_SSID, AP_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED)
-  {
+  while (WiFi.status() != WL_CONNECTED){
+    delay(500);
     if (WiFi.status() == WL_CONNECT_FAILED)
       ESP.restart();
   }
   WiFi.setAutoReconnect(true);
+  client.setInsecure();
+
+  uint microseconds = sonar.ping();
+  int retries = 5;
+  while (microseconds == 0 && retries > 0) {
+    delay(1000);
+    microseconds = sonar.ping();
+    retries -= 1;
+  }
+  reportToServer(microseconds);
+
+  ESP.deepSleepInstant(30e6);
 }
 
 void loop()
 {
-  // get ping
-  uint microseconds = sonar.ping();
-  reportToServer(microseconds);
-  ESP.deepSleep(30e6); // sleep for 30 seconds
 }
