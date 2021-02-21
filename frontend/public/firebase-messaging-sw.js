@@ -26,6 +26,13 @@ messaging.onBackgroundMessage(function (payload) {
         : payload.data.severity == "danger"
         ? `Siaga 🔴`
         : `Evakuasi Sekarang 🚨🚨🚨`,
+    requireInteraction: true,
+    vibration:
+      payload.data.severity == "warn"
+        ? [1000,1000,1000]
+        : payload.data.severity == "danger"
+        ? [500,500,500]
+        : [100,100,100,100,100,100,100,100,100]
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);

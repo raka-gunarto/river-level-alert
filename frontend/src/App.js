@@ -193,7 +193,9 @@ function App() {
             elevation={0}
           >
             <Typography variant="h2">
-              {sensorData.data[0]?.waterLevel ? `${(sensorData.data[0].waterLevel / 100).toFixed(2)}m` : "NO DATA"}
+              {sensorData.data[0]?.waterLevel
+                ? `${(sensorData.data[0].waterLevel / 100).toFixed(2)}m`
+                : "NO DATA"}
             </Typography>
           </Paper>
 
@@ -217,7 +219,12 @@ function App() {
                     dataKey="createdAt"
                     tickFormatter={(time) => new Date(time).toLocaleString()}
                   />
-                  <YAxis />
+                  <YAxis
+                    domain={[
+                      (dataMin) => Math.min(0, dataMin),
+                      (dataMax) => Math.max(2, dataMax),
+                    ]}
+                  />
                   <Tooltip
                     formatter={(value) => value.toFixed(2)}
                     labelFormatter={(time) => new Date(time).toLocaleString()}
