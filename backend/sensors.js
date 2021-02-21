@@ -14,7 +14,7 @@ module.exports = {
         safeLevel: 20,
         warnLevel: 24,
         dangerLevel: 28,
-        name: 'sungai 1',
+        name: 'Sungai Jali',
         location: 'somewhere',
     },
     sensor_2: {
