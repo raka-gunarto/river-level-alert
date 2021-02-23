@@ -7,38 +7,38 @@ function rawToCentimeters(raw) {
 module.exports = {
     sensor_1: {
         calculateWaterLevel: (raw) => {
-            const heightCalibration = 50;
+            const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
             return heightCalibration - cm;
         },
-        safeLevel: 20,
-        warnLevel: 24,
-        dangerLevel: 28,
+        safeLevel: 50,
+        warnLevel: 100,
+        dangerLevel: 150,
         name: 'Sungai Jali',
         location: 'somewhere',
     },
     sensor_2: {
         calculateWaterLevel: (raw) => {
-            const heightCalibration = 50;
+            const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
             return heightCalibration - cm;
         },
-        safeLevel: 20,
-        warnLevel: 24,
-        dangerLevel: 28,
-        name: 'sungai 2',
+        safeLevel: 50,
+        warnLevel: 100,
+        dangerLevel: 150,
+        name: 'Sungai Dulang',
         location: 'somewhere',
     },
     sensor_3: {
         calculateWaterLevel: (raw) => {
-            const heightCalibration = 50;
+            const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
             return heightCalibration - cm;
         },
-        safeLevel: 20,
-        warnLevel: 24,
-        dangerLevel: 28,
-        name: 'sungai 3',
+        safeLevel: 50,
+        warnLevel: 100,
+        dangerLevel: 150,
+        name: 'Sungai Balong',
         location: 'somewhere',
     },
 };
