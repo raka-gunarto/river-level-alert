@@ -46,15 +46,16 @@ void setup()
   uint microseconds = sonar.ping();
   int retries = 5;
   while (microseconds == 0 && retries > 0) {
-    delay(1000);
+    delay(500);
     microseconds = sonar.ping();
     retries -= 1;
   }
   reportToServer(microseconds);
 
-  ESP.deepSleepInstant(30e6);
+  ESP.deepSleep(30e6);
 }
 
 void loop()
 {
+  ESP.deepSleep(5e6);
 }
