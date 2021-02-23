@@ -220,6 +220,7 @@ function App() {
                     tickFormatter={(time) => new Date(time).toLocaleString()}
                   />
                   <YAxis
+                    scale="linear"
                     domain={[
                       (dataMin) => Math.min(0, dataMin),
                       (dataMax) => Math.max(2, dataMax),
