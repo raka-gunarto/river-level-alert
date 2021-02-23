@@ -207,8 +207,10 @@ function App() {
                 <LineChart
                   data={sensorData.data
                     .map((val) => {
-                      let deepCopyVal = JSON.parse(JSON.stringify(val))
-                      deepCopyVal.createdAt = new Date(val.deepCopyVal).getTime();
+                      let deepCopyVal = JSON.parse(JSON.stringify(val));
+                      deepCopyVal.createdAt = new Date(
+                        deepCopyVal.createdAt
+                      ).getTime();
                       deepCopyVal.waterLevel /= 100;
                       return deepCopyVal;
                     })
