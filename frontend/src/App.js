@@ -206,6 +206,7 @@ function App() {
               <ResponsiveContainer height={400}>
                 <LineChart
                   data={sensorData.data
+                    .slice()
                     .map((val) => {
                       val.createdAt = new Date(val.createdAt).getTime();
                       val.waterLevel /= 100;
