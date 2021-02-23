@@ -206,11 +206,11 @@ function App() {
               <ResponsiveContainer height={400}>
                 <LineChart
                   data={sensorData.data
-                    .slice()
                     .map((val) => {
-                      val.createdAt = new Date(val.createdAt).getTime();
-                      val.waterLevel /= 100;
-                      return val;
+                      let deepCopyVal = JSON.parse(JSON.stringify(val))
+                      deepCopyVal.createdAt = new Date(val.deepCopyVal).getTime();
+                      deepCopyVal.waterLevel /= 100;
+                      return deepCopyVal;
                     })
                     .reverse()}
                 >
