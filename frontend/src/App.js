@@ -224,6 +224,7 @@ function App() {
                       (dataMin) => Math.min(0, dataMin),
                       (dataMax) => Math.max(2, dataMax),
                     ]}
+                    tickFormatter={(waterLevel) => waterLevel.toFixed(2)}
                   />
                   <Tooltip
                     formatter={(value) => value.toFixed(2)}
