@@ -17,19 +17,19 @@ module.exports = {
         name: 'Sungai Jali',
         location: 'somewhere',
     },
-    sensor_2: {
+    sensor_1: {
         calculateWaterLevel: (raw) => {
-            const heightCalibration = 400;
+            const heightCalibration = 470;
             let cm = rawToCentimeters(raw);
             return heightCalibration - cm;
         },
-        safeLevel: 50,
-        warnLevel: 100,
+        safeLevel: 70,
+        warnLevel: 100, 
         dangerLevel: 150,
         name: 'Sungai Dulang',
         location: 'somewhere',
     },
-    sensor_1: {
+    sensor_2: {
         calculateWaterLevel: (raw) => {
             const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
