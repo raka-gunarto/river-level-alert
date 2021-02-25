@@ -22,10 +22,10 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationOptions = {
     body:
       payload.data.severity == "warn"
-        ? `Waspada 🟡`
+        ? `Siaga 🟡`
         : payload.data.severity == "danger"
-        ? `Siaga 🔴`
-        : `Evakuasi Sekarang 🚨🚨🚨`,
+        ? `Waspada 🔴`
+        : `Awas 🚨🚨🚨`,
     requireInteraction: true,
     vibration:
       payload.data.severity == "warn"

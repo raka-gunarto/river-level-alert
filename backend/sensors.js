@@ -7,13 +7,13 @@ function rawToCentimeters(raw) {
 module.exports = {
     sensor_3: {
         calculateWaterLevel: (raw) => {
-            const heightCalibration = 400;
+            const heightCalibration = 480;
             let cm = rawToCentimeters(raw);
             return heightCalibration - cm;
         },
-        safeLevel: 50,
-        warnLevel: 100,
-        dangerLevel: 150,
+        safeLevel: 110,
+        warnLevel: 160,
+        dangerLevel: 200,
         name: 'Sungai Jali',
         location: 'somewhere',
     },
