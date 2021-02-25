@@ -5,7 +5,7 @@ function rawToCentimeters(raw) {
 }
 
 module.exports = {
-    sensor_1: {
+    sensor_3: {
         calculateWaterLevel: (raw) => {
             const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
@@ -29,7 +29,7 @@ module.exports = {
         name: 'Sungai Dulang',
         location: 'somewhere',
     },
-    sensor_3: {
+    sensor_1: {
         calculateWaterLevel: (raw) => {
             const heightCalibration = 400;
             let cm = rawToCentimeters(raw);
